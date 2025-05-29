@@ -73,10 +73,11 @@
     </div>
     
     <script type="module">
+    // Import Firebase SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-    // Firebase Configuration (Replace with your Firebase Project Details)
+    // 🔧 Firebase Configuration (Replace with your Firebase Project Details)
     const firebaseConfig = {
         apiKey: "AIzaSyDqJE28QQCt0KovRewpFWxgXd_7WIqmFEM",
         authDomain: "momin-chat-33997.firebaseapp.com",
@@ -85,30 +86,36 @@
         appId: "1:583120424404:web:79a60a30d07afadf5c9a41"
     };
 
+    // 🔥 Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // 🕒 Function to Get Current Time
     function getCurrentTime() {
         let now = new Date();
         return now.toLocaleTimeString();
     }
 
+    // ✍️ Function to Save Messages to Firestore
     window.showMessage = async function () {
         let msg = document.getElementById("msgInput").value;
         let time_live = getCurrentTime();
 
+        // 🚨 Check if Message is Empty
         if (msg.trim() === "") {
             alert("Please enter a message!");
             return;
         }
 
         try {
+            // 🔄 Save Message to Firebase Firestore
             await addDoc(collection(db, "messages"), {
                 text: msg,
                 time: time_live
             });
+
             console.log("Message saved:", time_live, msg);
-            document.getElementById("msgInput").value = ""; // Clear input box
+            document.getElementById("msgInput").value = ""; // 🧹 Clear input box
         } catch (error) {
             console.error("Error saving message:", error);
         }
