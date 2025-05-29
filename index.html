@@ -5,25 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>momin's adda</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body{
+            background-color: black;
+        }
+        a:hover{
+            color: aqua;
+        }
+        a:visited{
+            color: white;
+        }
+        h2{
+            color:red
+        }
+
+
+    </style>
 </head>
 <body>
     <h1 style="color: green;" >welcome to momin's website</h1>
-    <h2 style="color: aqua;"> I ain't good in webdevelopment... </h2>
-    <table>
-        <tr>
-            <th style="color:white;">example video</th>
-            <th style="color:white;">song at spotify</th>
-        </tr>
-        <tr>
-            <td><video width="230" src="video2.mp4"controls></video></td>
-            <td><video width="230" src="video1.mp4"controls autoplay ></video></td>
-        </tr>
-        <br>
-    </table>
+    <h2 style="color: aqua;">guys i am just learning web dev</h2>
+    
     <footer>
         <table>
             <br>
-            <h2 style="color: crimson;">My info:</h2>
+            <h2>My info:</h2>
             <br>
             <tr>
                 <th style="color: blue;">name </th>
@@ -34,13 +40,13 @@
             </tr>
             <tr>
                 <td style="color: aqua;">Momin Ali Mandal </td>
-                <td style="color: aqua;"> 18 </td>
-                <td style="color: aqua;"> 12th </td>
-                <td style="color: aqua;"> pure science </td>
+                <td style="color: aqua;"> 18 | </td>
+                <td style="color: aqua;"> 12th completed | </td>
+                <td style="color: aqua;"> pure science | </td>
                 <td style="color: aqua;"> Hareknagar A.M. institution </td>
             </tr>
         </table>
-        <h2 style="color: aqua;">my python works(apps) : </h2>
+        <h2>my python works(apps) : </h2>
         <a href='calculator.exe'
             download>Download calculator.exe</a>
         <br>
@@ -53,10 +59,58 @@
             download>Download youtube_audio.exe</a>
         <br>
         <br>
+        <h2>Contacts</h2>
+        <a href="https://www.instagram.com/momin_ali_mandal">instagram_account</a>
+        <br>
+        <a href="https://www.t.me/momin_ali_mandal">telegram me</a>
+        <br>
         <br>
         <p style="color: darkred;">&copy; including of all rights of momin's gov.</p>
     </footer>
+    <div>
+        <input type="text" id="msgInput" placeholder="Type your message here">
+        <button onclick="showMessage()">Send</button>
+    </div>
     
-    <script src="script.js"></script>
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    // Firebase Configuration (Replace with your Firebase Project Details)
+    const firebaseConfig = {
+        apiKey: "AIzaSyDqJE28QQCt0KovRewpFWxgXd_7WIqmFEM",
+        authDomain: "momin-chat-33997.firebaseapp.com",
+        projectId: "momin-chat-33997",
+        storageBucket: "momin-chat-33997.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "1:583120424404:web:79a60a30d07afadf5c9a41"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    function getCurrentTime() {
+        let now = new Date();
+        return now.toLocaleTimeString();
+    }
+
+    async function showMessage() {
+        let msg = document.getElementById("msgInput").value;
+        let time_live = getCurrentTime();
+
+        if (msg.trim() === "") {
+            alert("Please enter a message!");
+            return;
+        }
+
+        await addDoc(collection(db, "messages"), {
+            text: msg,
+            time: time_live
+        });
+
+        console.log("Message saved:", time_live, msg);
+        document.getElementById("msgInput").value = ""; // Clear input box
+    }
+</script>
 </body>
 </html>
