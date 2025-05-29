@@ -93,7 +93,7 @@
         return now.toLocaleTimeString();
     }
 
-    async function showMessage() {
+    window.showMessage = async function () {
         let msg = document.getElementById("msgInput").value;
         let time_live = getCurrentTime();
 
@@ -102,14 +102,17 @@
             return;
         }
 
-        await addDoc(collection(db, "messages"), {
-            text: msg,
-            time: time_live
-        });
-
-        console.log("Message saved:", time_live, msg);
-        document.getElementById("msgInput").value = ""; // Clear input box
-    }
+        try {
+            await addDoc(collection(db, "messages"), {
+                text: msg,
+                time: time_live
+            });
+            console.log("Message saved:", time_live, msg);
+            document.getElementById("msgInput").value = ""; // Clear input box
+        } catch (error) {
+            console.error("Error saving message:", error);
+        }
+    };
 </script>
 </body>
 </html>
