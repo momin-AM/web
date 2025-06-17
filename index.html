@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Momin's Adda - Homepage</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #00ff99;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #ccc;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 150px);
+      gap: 20px;
+      margin: 40px 0;
+    }
+
+    .grid a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #111;
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      font-weight: bold;
+      text-decoration: none;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.2s ease-in-out;
+      border-radius: 10px;
+    }
+
+    .grid a:hover {
+      background-color: #00ffff;
+      color: #000;
+    }
+
+    .msg-box {
+      margin-top: 40px;
+      text-align: center;
+      width: 80%;
+    }
+
+    .msg-box input[type="text"] {
+      width: 70%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .msg-box button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #00ffcc;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .msg-box button:hover {
+      background-color: #00c2a8;
+    }
+
+    footer {
+      margin-top: 60px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Welcome to Momin's Adda</h1>
+    <p>Explore my world – Pick an option below:</p>
+  </header>
+
+  <div class="grid">
+    <a href="info.html">My Info</a>
+    <a href="events.html">Events</a>
+    <a href="creations.html">My Creations</a>
+    <a href="websites.html">My Websites</a>
+    <a href="chatroom.html">Live Chatroom</a>
+    <a href="#msgbox">Send Message</a>
+  </div>
+
+  <div class="msg-box" id="msgbox">
+    <h2 style="color:#00ffcc;">Send Me an Anonymous Message</h2>
+    <input type="text" id="msgInput" placeholder="Type your message..." />
+    <br />
+    <button onclick="showMessage()">Send</button>
+  </div>
+
+  <footer>
+    <p>© 2025 Momin's Adda</p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqJE28QQCt0KovRewpFWxgXd_7WIqmFEM",
+      authDomain: "momin-chat-33997.firebaseapp.com",
+      projectId: "momin-chat-33997",
+      storageBucket: "momin-chat-33997.appspot.com",
+      appId: "1:583120424404:web:79a60a30d07afadf5c9a41"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    function getCurrentDateTime() {
+      let now = new Date();
+      let dateParts = now.toISOString().split("T")[0].split("-");
+      let formattedDate = `${dateParts[1]}-${dateParts[2]}`;
+      let options = { hour: "numeric", minute: "numeric", second: "numeric", hour12: true };
+      let formattedTime = now.toLocaleTimeString(undefined, options);
+      return { date: formattedDate, time: formattedTime };
+    }
+
+    window.showMessage = async function () {
+      let msg = document.getElementById("msgInput").value;
+      let { date, time } = getCurrentDateTime();
+      if (msg.trim() === "") {
+        alert("Please enter a message!");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "messages"), {
+          text: msg,
+          date: date,
+          time: time
+        });
+        alert("Message sent successfully!");
+        document.getElementById("msgInput").value = "";
+      } catch (error) {
+        console.error("Error saving message:", error);
+      }
+    };
+  </script>
+
+</body>
+</html>
