@@ -92,6 +92,26 @@
       font-size: 0.9rem;
       color: #666;
     }
+    .grid a:hover {
+        background-color: #00ffff;
+        color: #000;
+        box-shadow: 0 0 15px #00ffff;
+    }
+    .grid a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+  font-weight: bold;
+  text-decoration: none;
+  color: #00ffff;
+  border: 1px solid rgba(0, 255, 255, 0.6);
+  background-color: rgba(0, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+  border-radius: 16px;
+  transition: all 0.2s ease-in-out;
+}
   </style>
 </head>
 <body>
@@ -122,6 +142,7 @@
   </footer>
 
   <script type="module">
+
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
@@ -165,6 +186,39 @@
         console.error("Error saving message:", error);
       }
     };
+  
+    function saveVisitor(ip, date, time) {
+      addDoc(collection(db, "visitors"), {
+        ip: ip,
+        date: date,
+        time: time
+      })
+      .then(() => console.log("Visitor IP saved"))
+      .catch((error) => console.error("Error saving IP:", error));
+    }
+  window.addEventListener("load", () => {
+  const hasVisited = localStorage.getItem("ipLogged");
+
+  if (hasVisited) {
+    console.log("Visitor IP already saved this session.");
+    return; // skip logging again
+  }
+
+  fetch("https://ipapi.co/json/")
+    .then(res => res.json())
+    .then(data => {
+      let ip = data.ip;
+      let now = new Date();
+      let time = now.toLocaleTimeString();
+      let date = now.toLocaleDateString();
+      saveVisitor(ip, date, time);
+      localStorage.setItem("ipLogged", "true"); // mark as logged
+    })
+    .catch(err => console.error("IP fetch failed:", err));
+});
+  
+
+
   </script>
 
 </body>
