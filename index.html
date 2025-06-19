@@ -193,14 +193,14 @@
         date: date,
         time: time
       })
-      .then(() => console.log("Visitor IP saved"))
+      .then(() => console.log("new"))
       .catch((error) => console.error("Error saving IP:", error));
     }
   window.addEventListener("load", () => {
   const hasVisited = localStorage.getItem("ipLogged");
 
   if (hasVisited) {
-    console.log("Visitor IP already saved this session.");
+    console.log("old");
     return; // skip logging again
   }
 
