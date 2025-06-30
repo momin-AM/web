@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Download YouTube Audio</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      color: #ff00cc;
+    }
+    input {
+      width: 80%;
+      padding: 12px;
+      margin: 20px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      background: #ff00cc;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #cc0099;
+    }
+    .msg {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #ffa07a;
+    }
+  </style>
+</head>
+<body>
+  <h1>Download YouTube Music</h1>
+  <input type="text" id="audioUrl" placeholder="Paste YouTube link here"/>
+  <button onclick="downloadAudio()">Download</button>
+  <div class="msg" id="message"></div>
+
+  <script>
+    function downloadAudio() {
+      const url = document.getElementById('audioUrl').value;
+      const msg = document.getElementById('message');
+      if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
+        msg.textContent = "Please enter a valid YouTube URL.";
+      } else {
+        msg.textContent = "Direct audio downloads aren’t available here. Try tools like yt-dlp locally.";
+      }
+    }
+  </script>
+</body>
+</html>
