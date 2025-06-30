@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Download YouTube Audio</title>
+  <title>Download YouTube Music</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -56,12 +56,34 @@
     function downloadAudio() {
       const url = document.getElementById('audioUrl').value;
       const msg = document.getElementById('message');
+
       if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
         msg.textContent = "Please enter a valid YouTube URL.";
-      } else {
-        msg.textContent = "Direct audio downloads aren’t available here. Try tools like yt-dlp locally.";
+        return;
       }
+
+      msg.textContent = "Downloading...";
+
+      fetch("https://your-railway-url.up.railway.app/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: url, format: "audio" })
+      })
+      .then(res => res.blob())
+      .then(blob => {
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = "audio.mp3";
+        link.click();
+        msg.textContent = "Download ready!";
+      })
+      .catch(err => {
+        console.error(err);
+        msg.textContent = "Something went wrong.";
+      });
     }
   </script>
 </body>
 </html>
+
