@@ -53,15 +53,36 @@
   <div class="msg" id="message"></div>
 
   <script>
-    function downloadVideo() {
-      const url = document.getElementById('videoUrl').value;
-      const msg = document.getElementById('message');
-      if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
-        msg.textContent = "Please enter a valid YouTube URL.";
-      } else {
-        msg.textContent = "Direct downloading is not supported here. Use open-source tools like yt-dlp.";
-      }
+  function downloadVideo() {
+    const url = document.getElementById('videoUrl').value;
+    const msg = document.getElementById('message');
+
+    if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
+      msg.textContent = "Please enter a valid YouTube URL.";
+      return;
     }
-  </script>
+
+    msg.textContent = "Downloading...";
+
+    fetch("https://your-railway-url.up.railway.app/download", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: url, format: "video" })
+    })
+    .then(res => res.blob())
+    .then(blob => {
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = "video.mp4";
+      link.click();
+      msg.textContent = "Download ready!";
+    })
+    .catch(err => {
+      console.error(err);
+      msg.textContent = "Something went wrong.";
+    });
+  }
+</script>
 </body>
 </html>
