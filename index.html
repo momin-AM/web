@@ -122,14 +122,14 @@
   </header>
 
   <div class="grid">
-    <a href="info.html">My Info</a>
-    <a href="events.html">Events</a>
-    <a href="creations.html">My Creations</a>
-    <a href="websites.html">My Websites</a>
-    <a href="ytvideo.html">download yt video</a>
-    <a href="ytaudio.html">download yt music</a>
-    <a href="chatroom.html">Live Chatroom</a>
-    <a href="#msgbox">Send Message</a>
+    <a href="features/info.html">My Info</a>
+    <a href="features/events.html">Events</a>
+    <a href="features/creations.html">pc apps</a>
+    <a href="features/websites.html">My Websites</a>
+    <a href="features/calculator.html">calculator</a>
+    <a href="features/weather.html">weather</a>
+    <a href="features/chatroom.html">Chatroom</a>
+    <a href="#msgbox">Msg me</a>
   </div>
 
   <div class="msg-box" id="msgbox">
@@ -148,13 +148,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDqJE28QQCt0KovRewpFWxgXd_7WIqmFEM",
-      authDomain: "momin-chat-33997.firebaseapp.com",
-      projectId: "momin-chat-33997",
-      storageBucket: "momin-chat-33997.appspot.com",
-      appId: "1:583120424404:web:79a60a30d07afadf5c9a41"
-    };
+    import { firebaseConfig } from './features/firebaseConfig.js';
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -189,15 +183,16 @@
       }
     };
   
-    function saveVisitor(ip, date, time) {
-      addDoc(collection(db, "visitors"), {
-        ip: ip,
-        date: date,
-        time: time
-      })
-      .then(() => console.log("new"))
-      .catch((error) => console.error("Error saving IP:", error));
-    }
+  function saveVisitor(ip, date, time) {
+  addDoc(collection(db, "visitors"), {
+    ip,
+    date,
+    time,
+    createdAt: serverTimestamp() // ← Add this line to enable reliable sorting
+  })
+  .then(() => console.log("new"))
+  .catch((error) => console.error("Error saving IP:", error));
+}
   window.addEventListener("load", () => {
   const hasVisited = localStorage.getItem("ipLogged");
 
