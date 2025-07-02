@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neon Weather Forecast</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 30px;
+      background-color: #0d0d0d;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #0ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .back-btn {
+      align-self: flex-start;
+      padding: 12px 20px;
+      border: 2px solid #0ff;
+      border-radius: 5px;
+      background: #111;
+      color: #0ff;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 0 8px #0ff;
+      transition: 0.3s;
+    }
+
+    .back-btn:hover {
+      background: #0ff;
+      color: #000;
+    }
+
+    h1 {
+      font-size: 36px;
+      color: #0ff;
+      text-shadow: 0 0 8px #0ff;
+      margin-bottom: 0;
+    }
+
+    .tagline {
+      font-size: 16px;
+      margin-top: 0;
+      color: #aaa;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      width: 250px;
+      background: #111;
+      color: #0ff;
+      border: 1px solid #0ff;
+      box-shadow: 0 0 8px #0ff;
+    }
+
+    button {
+      padding: 12px 16px;
+      margin-top: 10px;
+      font-size: 16px;
+      background: #111;
+      border: 1px solid #0ff;
+      color: #0ff;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 8px #0ff;
+    }
+
+    button:hover {
+      background: #0ff;
+      color: #000;
+    }
+
+    .result-box {
+      margin-top: 20px;
+      background: #1a1a1a;
+      border: 2px solid #0ff;
+      border-radius: 10px;
+      padding: 20px;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 0 15px #0ff;
+    }
+
+    .result-box h2 {
+      margin-bottom: 10px;
+    }
+
+    .emoji {
+      font-size: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-btn" href="../index.html">← Back</a>
+
+  <h1>☁️ Weather Vibes</h1>
+  <p class="tagline">Serving you the drip forecast 💧</p>
+
+  <input type="text" id="cityInput" placeholder="Enter a city..." />
+  <button onclick="getWeather()">Get Weather</button>
+
+  <div id="weatherResult" class="result-box" style="display: none;"></div>
+
+  <script>
+  async function getWeather() {
+    const cityInput = document.getElementById("cityInput");
+    const city = cityInput.value.trim();
+    const apiKey = "43c39dd75ee3737491ae3769db9ab907";
+    const resultBox = document.getElementById("weatherResult");
+
+    if (!city) return;
+
+    try {
+      const encodedCity = encodeURIComponent(city);
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${encodedCity}&appid=${apiKey}&units=metric`
+      );
+      const data = await res.json();
+
+      if (data.cod !== 200) {
+        resultBox.innerHTML = `<h2>City not found 😢</h2>`;
+      } else {
+        const icon = getWeatherEmoji(data.weather[0].main);
+        resultBox.innerHTML = `
+          <div class="emoji">${icon}</div>
+          <h2>${data.name}, ${data.sys.country}</h2>
+          <p><strong>${data.weather[0].main}</strong>: ${data.weather[0].description}</p>
+          <p>🌡️ Temp: ${data.main.temp}°C</p>
+          <p>💧 Humidity: ${data.main.humidity}%</p>
+          <p>💨 Wind: ${data.wind.speed} m/s</p>
+        `;
+      }
+
+      resultBox.style.display = "block";
+    } catch (err) {
+      resultBox.innerHTML = "<h2>Error fetching weather 🔌</h2>";
+      resultBox.style.display = "block";
+    }
+  }
+
+  function getWeatherEmoji(type) {
+    const map = {
+      Clear: "☀️",
+      Clouds: "☁️",
+      Rain: "🌧️",
+      Thunderstorm: "⛈️",
+      Snow: "❄️",
+      Drizzle: "💧",
+      Mist: "🌫️",
+      Haze: "🌁"
+    };
+    return map[type] || "🌍";
+  }
+</script>
+
+</body>
+</html>
