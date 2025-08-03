@@ -442,10 +442,11 @@ async function sendOTPToAdminEmail(adminEmail) {
     document.body.appendChild(loadingMsg);
 
     // Configure email link settings
-    const actionCodeSettings = {
-      url: window.location.origin + '/admin-verify.html',
-      handleCodeInApp: true
-    };
+     const actionCodeSettings = {
+  url: 'https://momin-amgithub.io/web/admin-verify.html', // Fixed path
+  handleCodeInApp: true
+};
+
 
     // Send magic link to your fixed admin email
     await sendSignInLinkToEmail(auth, adminEmail, actionCodeSettings);
@@ -544,4 +545,5 @@ window.composeGmail = function () {
   </script>
 
 </body>
+
 </html>
