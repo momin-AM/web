@@ -10,6 +10,7 @@
       color: #00ffff;
       font-family: 'Courier New', monospace;
       padding: 30px;
+      min-height: 100vh;
     }
 
     .back-btn {
@@ -32,56 +33,224 @@
       color: #00ff99;
       font-size: 2.2rem;
       margin-bottom: 20px;
+      text-align: center;
+      text-shadow: 0 0 10px rgba(0, 255, 153, 0.5);
+    }
+
+    .loading {
+      text-align: center;
+      color: #00ffcc;
+      font-size: 1.2rem;
+      margin: 2rem 0;
+    }
+
+    .events-container {
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     .news-item {
-      background-color: #111;
+      background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 153, 0.05));
       border-left: 4px solid #00ffcc;
-      border-radius: 5px;
-      padding: 15px;
+      border-radius: 10px;
+      padding: 20px;
       margin-bottom: 20px;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .news-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 255, 153, 0.2);
+      border-color: #00ff99;
     }
 
     .news-date {
-      color: #888;
-      font-size: 0.85rem;
-      margin-bottom: 5px;
+      color: #00ffcc;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .news-title {
+      color: #00ff99;
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 8px;
     }
 
     .news-text {
       font-size: 1.1rem;
       color: #ffffff;
+      line-height: 1.6;
     }
+
     .news-text a {
-        color: yellow;
-        text-decoration: none;
-        font-weight: bold;
+      color: yellow;
+      text-decoration: none;
+      font-weight: bold;
     }
 
     .news-text a:hover {
-        color: #ea08ea;
-        text-decoration: underline;
+      color: #ea08ea;
+      text-decoration: underline;
+    }
+
+    .event-status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .status-upcoming {
+      background: rgba(0, 255, 153, 0.2);
+      color: #00ff99;
+      border: 1px solid #00ff99;
+    }
+
+    .status-live {
+      background: rgba(255, 0, 100, 0.2);
+      color: #ff0064;
+      border: 1px solid #ff0064;
+      animation: pulse 2s infinite;
+    }
+
+    .status-completed {
+      background: rgba(128, 128, 128, 0.2);
+      color: #888;
+      border: 1px solid #666;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+
+    .no-events {
+      text-align: center;
+      color: #888;
+      font-style: italic;
+      margin: 3rem 0;
+      font-size: 1.1rem;
+    }
+
+    .error-message {
+      text-align: center;
+      color: #ff4757;
+      background: rgba(255, 71, 87, 0.1);
+      border: 1px solid #ff4757;
+      border-radius: 10px;
+      padding: 1rem;
+      margin: 2rem 0;
+    }
+
+    /* Static events section */
+    .static-events {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 2px solid rgba(0, 255, 153, 0.3);
+    }
+
+    .static-events h2 {
+      color: #00ffcc;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .news-item {
+        padding: 15px;
+      }
+      
+      .news-title {
+        font-size: 1.1rem;
+      }
     }
   </style>
 </head>
 <body>
-
   <a href="../index.html" class="back-btn">← Back to Home</a>
 
-  <h1>📢 Latest Announcements</h1>
+  <h1>📢 Latest Events & Announcements</h1>
 
-     <div class="news-item">
-    <div class="news-date">July 2025</div>
-    <div class="news-text">New "find the imposter" chat game has been released. access from "My websites" section</div>
-     </div>
-  <div class="news-item">
-    <div class="news-date">July 2025</div>
-    <div class="news-text">🎉 weather and calculator has been created</div>
-  </div>
-  <div class="news-item">
-    <div class="news-date">June 2025</div>
-    <div class="news-text">🛠️ I have just created a "love test" web app! access from "My websites"</a> </div>
+  <div class="events-container">
+    <!-- Dynamic Events Section -->
+    <div id="dynamic-events">
+      <div class="loading">Loading latest events...</div>
+    </div>
   </div>
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+    import { firebaseConfig } from './firebaseConfig.js';
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Load dynamic events from Firebase
+    async function loadDynamicEvents() {
+      const dynamicEventsContainer = document.getElementById('dynamic-events');
+      
+      try {
+        // Query events ordered by creation date (newest first)
+        const q = query(collection(db, "events"), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+          dynamicEventsContainer.innerHTML = `
+            <div class="no-events">
+              <p>No dynamic events yet. Events added through the admin panel will appear here!</p>
+            </div>
+          `;
+          return;
+        }
+
+        let eventsHTML = '<h2 style="color: #00ff99; text-align: center; margin-bottom: 1.5rem;">🚀 Latest Events</h2>';
+        
+        querySnapshot.forEach((doc) => {
+          const event = doc.data();
+          const statusClass = `status-${event.status}`;
+          
+          eventsHTML += `
+            <div class="news-item">
+              <div class="news-date">${event.date}</div>
+              <div class="news-title">${event.title}</div>
+              <div class="news-text">${event.description}</div>
+              <span class="event-status ${statusClass}">${event.status.charAt(0).toUpperCase() + event.status.slice(1)}</span>
+            </div>
+          `;
+        });
+        
+        dynamicEventsContainer.innerHTML = eventsHTML;
+        
+      } catch (error) {
+        console.error('Error loading events:', error);
+        dynamicEventsContainer.innerHTML = `
+          <div class="error-message">
+            <p>⚠️ Unable to load dynamic events at the moment.</p>
+            <p>Please check your connection or try again later.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Load events when page loads
+    window.addEventListener('load', loadDynamicEvents);
+  </script>
 </body>
 </html>
