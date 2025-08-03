@@ -364,186 +364,157 @@
         console.error("Error saving message:", error);
       }
     };
-  
-  function saveVisitor(ip, date, time) {
-  addDoc(collection(db, "visitors"), {
-    ip,
-    date,
-    time,
-    createdAt: serverTimestamp() // ← Add this line to enable reliable sorting
-  })
-  .then(() => console.log("new"))
-  .catch((error) => console.error("Error saving IP:", error));
-}
-  window.addEventListener("load", () => {
-  const hasVisited = localStorage.getItem("ipLogged");
 
-  if (hasVisited) {
-    console.log("old");
-    return; // skip logging again
-  }
-
-  fetch("https://ipapi.co/json/")
-    .then(res => res.json())
-    .then(data => {
-      let ip = data.ip;
-      let now = new Date();
-      let time = now.toLocaleTimeString();
-      let date = now.toLocaleDateString();
-      saveVisitor(ip, date, time);
-      localStorage.setItem("ipLogged", "true"); // mark as logged
-    })
-    .catch(err => console.error("IP fetch failed:", err));
-});
-  
-// Hamburger Menu Functionality
-window.toggleSidebar = function() {
-  const sidebar = document.getElementById('sidebar');
-  sidebar.classList.toggle('active');
-}
-
-// Close sidebar when clicking outside
-document.addEventListener('click', function(e) {
-  const sidebar = document.getElementById('sidebar');
-  const hamburger = document.querySelector('.hamburger');
-  
-  if (sidebar.classList.contains('active') && 
-      !sidebar.contains(e.target) && 
-      !hamburger.contains(e.target)) {
-    sidebar.classList.remove('active');
-  }
-});
-
-// Firebase Auth setup
-const auth = getAuth(app);
-
-// Admin OTP System - Sends OTP to fixed admin email
-window.checkAdminAccess = function() {
-  const adminEmail = "darkseener45@gmail.com"; // Your fixed admin email
-  
-  if (confirm("Send OTP to admin email for verification?")) {
-    sendOTPToAdminEmail(adminEmail);
-  }
-}
-
-// Send OTP to fixed admin email
-async function sendOTPToAdminEmail(adminEmail) {
-  try {
-    // Show loading message
-    const loadingMsg = document.createElement('div');
-    loadingMsg.id = 'loading-msg';
-    loadingMsg.style.cssText = `
-      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      background: rgba(0, 255, 153, 0.1); border: 1px solid #00ff99;
-      color: #00ff99; padding: 20px; border-radius: 10px; z-index: 9999;
-      font-family: 'Courier New', monospace; text-align: center;
-    `;
-    loadingMsg.innerHTML = '🚀 Sending OTP to admin email...<br><small>Please wait...</small>';
-    document.body.appendChild(loadingMsg);
-
-    // Configure email link settings
-     const actionCodeSettings = {
-  url: 'https://momin-amgithub.io/web/admin-verify.html', // Fixed path
-  handleCodeInApp: true
-};
-
-
-    // Send magic link to your fixed admin email
-    await sendSignInLinkToEmail(auth, adminEmail, actionCodeSettings);
-    
-    // Remove loading message
-    document.body.removeChild(loadingMsg);
-    
-    // Store admin email for verification
-    localStorage.setItem('adminEmailForSignIn', adminEmail);
-    
-    alert(`🎉 OTP sent to admin email!\n\nCheck your email (${adminEmail}) and click the link to access admin panel.`);
-    
-  } catch (error) {
-    // Remove loading message if error
-    const loadingMsg = document.getElementById('loading-msg');
-    if (loadingMsg) document.body.removeChild(loadingMsg);
-    
-    console.error('Error sending OTP:', error);
-    alert('❌ Error sending OTP: ' + error.message);
-  }
-}
-
-// Check if user is coming back from email link
-window.addEventListener('load', function() {
-  if (isSignInWithEmailLink(auth, window.location.href)) {
-    const adminEmail = "darkseener45@gmail.com"; // Use the same fixed email
-    
-    signInWithEmailLink(auth, adminEmail, window.location.href)
-      .then((result) => {
-        localStorage.removeItem('adminEmailForSignIn');
-        alert('✅ Admin access granted!');
-        window.location.href = 'admin.html';
+    function saveVisitor(ip, date, time) {
+      addDoc(collection(db, "visitors"), {
+        ip,
+        date,
+        time,
+        createdAt: serverTimestamp() // ← Add this line to enable reliable sorting
       })
-      .catch((error) => {
-        console.error('Error during sign-in:', error);
-        alert('❌ Invalid or expired link. Please try again.');
-      });
-  }
-});
+        .then(() => console.log("new"))
+        .catch((error) => console.error("Error saving IP:", error));
+    }
+    window.addEventListener("load", () => {
+      const hasVisited = localStorage.getItem("ipLogged");
+
+      if (hasVisited) {
+        console.log("old");
+        return; // skip logging again
+      }
+
+      fetch("https://ipapi.co/json/")
+        .then(res => res.json())
+        .then(data => {
+          let ip = data.ip;
+          let now = new Date();
+          let time = now.toLocaleTimeString();
+          let date = now.toLocaleDateString();
+          saveVisitor(ip, date, time);
+          localStorage.setItem("ipLogged", "true"); // mark as logged
+        })
+        .catch(err => console.error("IP fetch failed:", err));
+    });
+
+    // Hamburger Menu Functionality
+    window.toggleSidebar = function () {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('active');
+    }
+
+    // Close sidebar when clicking outside
+    document.addEventListener('click', function (e) {
+      const sidebar = document.getElementById('sidebar');
+      const hamburger = document.querySelector('.hamburger');
+
+      if (sidebar.classList.contains('active') &&
+        !sidebar.contains(e.target) &&
+        !hamburger.contains(e.target)) {
+        sidebar.classList.remove('active');
+      }
+    });
+
+    // Firebase Auth setup
+    const auth = getAuth(app);
+
+    // Admin OTP System - Sends OTP to fixed admin email
+    // Temporary admin access (replace your checkAdminAccess function)
+    window.checkAdminAccess = function () {
+      const password = prompt("Enter admin password:");
+
+      if (password === null) {
+        return; // User cancelled
+      }
+
+      // Temporary password - change this to whatever you want
+      const correctPassword = "admin123";
+
+      if (password === correctPassword) {
+        // Set a temporary admin session
+        localStorage.setItem('adminAccess', 'granted');
+        window.location.href = "admin/admin.html";
+      } else {
+        alert("❌ Incorrect password! Access denied.");
+      }
+    }
+
+
+    // Check if user is coming back from email link
+    window.addEventListener('load', function () {
+      if (isSignInWithEmailLink(auth, window.location.href)) {
+        const adminEmail = "darkseener45@gmail.com"; // Use the same fixed email
+
+        signInWithEmailLink(auth, adminEmail, window.location.href)
+          .then((result) => {
+            localStorage.removeItem('adminEmailForSignIn');
+            alert('✅ Admin access granted!');
+            window.location.href = 'admin.html';
+          })
+          .catch((error) => {
+            console.error('Error during sign-in:', error);
+            alert('❌ Invalid or expired link. Please try again.');
+          });
+      }
+    });
 
 
 
 
-// Load events content dynamically
-async function loadEventsContent() {
-  const eventsContainer = document.getElementById('events-content');
-  
-  // Check if the events container exists
-  if (!eventsContainer) {
-    console.log('Events container not found - skipping events load');
-    return;
-  }
-  
-  try {
-    const response = await fetch('features/events.html');
-    const html = await response.text();
-    eventsContainer.innerHTML = html;
-  } catch (error) {
-    eventsContainer.innerHTML = '<p style="color: #ff6b6b;">Unable to load events at the moment.</p>';
-    console.error('Error loading events:', error);
-  }
-}
+    // Load events content dynamically
+    async function loadEventsContent() {
+      const eventsContainer = document.getElementById('events-content');
 
-// Hamburger Menu Functionality
-window.toggleSidebar = function() {
-  const sidebar = document.getElementById('sidebar');
-  sidebar.classList.toggle('active');
-}
+      // Check if the events container exists
+      if (!eventsContainer) {
+        console.log('Events container not found - skipping events load');
+        return;
+      }
 
-// Close sidebar when clicking outside
-document.addEventListener('click', function(e) {
-  const sidebar = document.getElementById('sidebar');
-  const hamburger = document.querySelector('.hamburger');
-  
-  if (sidebar.classList.contains('active') && 
-      !sidebar.contains(e.target) && 
-      !hamburger.contains(e.target)) {
-    sidebar.classList.remove('active');
-  }
-});
+      try {
+        const response = await fetch('features/events.html');
+        const html = await response.text();
+        eventsContainer.innerHTML = html;
+      } catch (error) {
+        eventsContainer.innerHTML = '<p style="color: #ff6b6b;">Unable to load events at the moment.</p>';
+        console.error('Error loading events:', error);
+      }
+    }
 
-// Load events when page loads (only if events container exists)
-window.addEventListener('load', function() {
-  loadEventsContent();
-});
+    // Hamburger Menu Functionality
+    window.toggleSidebar = function () {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('active');
+    }
 
-/* Opens Gmail’s compose screen addressed to abc@gmail.com */
-window.composeGmail = function () {
-  window.open(
-    "https://mail.google.com/mail/?view=cm&fs=1&to=darkseener45@gmail.com",
-    "_blank",
-    "noopener"
-  );          // _blank → new tab / window
-};
+    // Close sidebar when clicking outside
+    document.addEventListener('click', function (e) {
+      const sidebar = document.getElementById('sidebar');
+      const hamburger = document.querySelector('.hamburger');
+
+      if (sidebar.classList.contains('active') &&
+        !sidebar.contains(e.target) &&
+        !hamburger.contains(e.target)) {
+        sidebar.classList.remove('active');
+      }
+    });
+
+    // Load events when page loads (only if events container exists)
+    window.addEventListener('load', function () {
+      loadEventsContent();
+    });
+
+    /* Opens Gmail’s compose screen addressed to abc@gmail.com */
+    window.composeGmail = function () {
+      window.open(
+        "https://mail.google.com/mail/?view=cm&fs=1&to=darkseener45@gmail.com",
+        "_blank",
+        "noopener"
+      );          // _blank → new tab / window
+    };
 
   </script>
 
 </body>
 
 </html>
+
