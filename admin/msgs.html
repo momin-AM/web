@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Momin's Adda</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: monospace;
+      padding: 20px;
+    }
+    h1 {
+      color: limegreen;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid white;
+      padding: 8px;
+      text-align: center;
+    }
+    button {
+      padding: 5px 10px;
+      background-color: crimson;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛠 Admin Panel – Anonymous Messages</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Message</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="messageTableBody">
+      <!-- Messages will populate here -->
+    </tbody>
+  </table>
+
+  <script type="module">
+    // ✅ Firebase SDK import
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    // 🔥 Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqJE28QQCt0KovRewpFWxgXd_7WIqmFEM",
+      authDomain: "momin-chat-33997.firebaseapp.com",
+      projectId: "momin-chat-33997",
+      storageBucket: "momin-chat-33997.appspot.com",
+      appId: "1:583120424404:web:79a60a30d07afadf5c9a41"
+    };
+
+    // 🚀 Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // 🗂 Load messages into table
+    async function loadMessages() {
+      const querySnapshot = await getDocs(collection(db, "messages"));
+      const tableBody = document.getElementById("messageTableBody");
+      tableBody.innerHTML = "";
+
+      querySnapshot.forEach((docSnap) => {
+        const msg = docSnap.data();
+        const row = `
+          <tr>
+            <td>${msg.text}</td>
+            <td>${msg.date}</td>
+            <td>${msg.time}</td>
+            <td><button onclick="deleteMessage('${docSnap.id}')">Delete</button></td>
+          </tr>
+        `;
+        tableBody.innerHTML += row;
+      });
+    }
+
+    // ❌ Delete message from Firestore
+    window.deleteMessage = async function(id) {
+      await deleteDoc(doc(db, "messages", id));
+      loadMessages();
+    }
+
+    window.onload = loadMessages;
+  </script>
+</body>
+</html>

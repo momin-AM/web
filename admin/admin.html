@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Momin's Adda</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .admin-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem;
+      background: linear-gradient(135deg, rgba(0, 255, 153, 0.1), rgba(0, 255, 255, 0.05));
+      border: 1px solid rgba(0, 255, 153, 0.3);
+      border-radius: 20px;
+    }
+
+    .admin-header h1 {
+      color: #00ff99;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 15px rgba(0, 255, 153, 0.5);
+    }
+
+    .admin-header p {
+      color: #ccc;
+      font-size: 1.1rem;
+    }
+
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .admin-card {
+      background: rgba(0, 255, 255, 0.05);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 15px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .admin-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 255, 153, 0.2);
+      border-color: #00ffcc;
+      background: rgba(0, 255, 255, 0.1);
+    }
+
+    .admin-card h3 {
+      color: #00ffcc;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .admin-card p {
+      color: #ccc;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+
+    .admin-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(0, 255, 153, 0.2);
+      border: 1px solid #00ff99;
+      color: #00ff99;
+      padding: 10px 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: #00ff99;
+      color: #000;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, #1a202c, #2d3748);
+      margin: 5% auto;
+      padding: 2rem;
+      border: 1px solid #00ff99;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .close {
+      color: #00ff99;
+      float: right;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #00ffcc;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      color: #00ffcc;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 5px;
+      background: rgba(0, 255, 255, 0.05);
+      color: #fff;
+      font-family: 'Courier New', monospace;
+    }
+
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      outline: none;
+      border-color: #00ffcc;
+      box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+    }
+
+    .btn {
+      background: #00ffcc;
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 5px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: #00c2a8;
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background: #ff4757;
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      background: #ff3838;
+    }
+
+    .data-container {
+      background: rgba(0, 255, 255, 0.05);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 10px;
+      padding: 1rem;
+      margin: 1rem 0;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .data-item {
+      background: rgba(0, 0, 0, 0.3);
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 3px solid #00ffcc;
+    }
+
+    .data-item h4 {
+      color: #00ff99;
+      margin-bottom: 5px;
+    }
+
+    .data-item p {
+      color: #ccc;
+      margin: 5px 0;
+    }
+
+    .data-item small {
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      .admin-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .admin-header h1 {
+        font-size: 2rem;
+      }
+      
+      .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="back-btn">← Back to Home</a>
+
+  <div class="admin-header">
+    <h1>🔧 Admin Panel</h1>
+    <p>Manage your website content and monitor activity</p>
+  </div>
+
+  <div class="admin-grid">
+    <div class="admin-card" onclick="openModal('addEventModal')">
+      <span class="admin-icon">📅</span>
+      <h3>Add Events</h3>
+      <p>Create new events and announcements for your visitors</p>
+    </div>
+
+    <div class="admin-card" onclick="openModal('deleteEventModal')">
+      <span class="admin-icon">🗑️</span>
+      <h3>Delete Events</h3>
+      <p>Remove outdated or cancelled events from your website</p>
+    </div>
+
+    <a href="msgs.html" class="admin-card">
+      <span class="admin-icon">💬</span>
+      <h3>Messages</h3>
+      <p>View anonymous messages sent by your visitors</p>
+    </a>
+
+    <a href="ipshow.html" class="admin-card">
+      <span class="admin-icon">🌐</span>
+      <h3>Show IP</h3>
+      <p>Monitor visitor IP addresses and website traffic</p>
+    </a>
+  </div>
+
+  <!-- Add Event Modal -->
+  <div id="addEventModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('addEventModal')">&times;</span>
+      <h2 style="color: #00ff99; margin-bottom: 1rem;">📅 Add New Event</h2>
+      <form id="addEventForm">
+        <div class="form-group">
+          <label for="eventDate">Event Date:</label>
+          <input type="text" id="eventDate" placeholder="e.g., August 15, 2025 or Live Now" required>
+        </div>
+        <div class="form-group">
+          <label for="eventTitle">Event Title:</label>
+          <input type="text" id="eventTitle" placeholder="e.g., 🚀 Website Launch Party" required>
+        </div>
+        <div class="form-group">
+          <label for="eventDescription">Event Description:</label>
+          <textarea id="eventDescription" rows="4" placeholder="Describe your event..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="eventStatus">Status:</label>
+          <select id="eventStatus" required>
+            <option value="upcoming">Upcoming</option>
+            <option value="live">Live</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">Add Event</button>
+        <button type="button" class="btn" onclick="closeModal('addEventModal')">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Event Modal -->
+  <div id="deleteEventModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('deleteEventModal')">&times;</span>
+      <h2 style="color: #ff4757; margin-bottom: 1rem;">🗑️ Delete Events</h2>
+      <div id="eventsList" class="data-container">
+        <p>Loading events...</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { firebaseConfig } from '../features/firebaseConfig.js';
+
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+// Check if user is authenticated
+const auth = getAuth(app);
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    // User is not signed in, redirect to home
+    alert('❌ Unauthorized access. Please use the admin login from homepage.');
+    window.location.href = 'index.html';
+  }
+});
+
+    // Modal Functions
+    window.openModal = function(modalId) {
+      document.getElementById(modalId).style.display = 'block';
+    }
+
+    window.closeModal = function(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modals = document.querySelectorAll('.modal');
+      modals.forEach(modal => {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    }
+
+  // Add Event Functionality (with better error logging)
+document.getElementById('addEventForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  console.log('Form submitted, preparing event data...');
+  
+  const eventData = {
+    date: document.getElementById('eventDate').value,
+    title: document.getElementById('eventTitle').value,
+    description: document.getElementById('eventDescription').value,
+    status: document.getElementById('eventStatus').value,
+    createdAt: new Date().toISOString()
+  };
+
+  console.log('Event data prepared:', eventData);
+
+  try {
+    console.log('Attempting to add event to Firestore...');
+    const docRef = await addDoc(collection(db, "events"), eventData);
+    console.log('Event added successfully with ID:', docRef.id);
+    alert('Event added successfully!');
+    document.getElementById('addEventForm').reset();
+    closeModal('addEventModal');
+  } catch (error) {
+    console.error('Full error details:', error);
+    console.error('Error code:', error.code);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    alert(`Error adding event: ${error.message}`);
+  }
+});
+
+
+    // Load Events for Deletion
+    window.loadEventsForDeletion = async function() {
+      const eventsList = document.getElementById('eventsList');
+      eventsList.innerHTML = '<p>Loading events...</p>';
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "events"));
+        
+        if (querySnapshot.empty) {
+          eventsList.innerHTML = '<p>No events found.</p>';
+          return;
+        }
+
+        let eventsHTML = '';
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          eventsHTML += `
+            <div class="data-item">
+              <h4>${data.title}</h4>
+              <p><strong>Date:</strong> ${data.date}</p>
+              <p><strong>Description:</strong> ${data.description}</p>
+              <p><strong>Status:</strong> ${data.status}</p>
+              <button class="btn btn-danger" onclick="deleteEvent('${doc.id}')">Delete</button>
+            </div>
+          `;
+        });
+        
+        eventsList.innerHTML = eventsHTML;
+      } catch (error) {
+        console.error('Error loading events:', error);
+        eventsList.innerHTML = '<p style="color: #ff4757;">Error loading events.</p>';
+      }
+    }
+
+    // Delete Event
+    window.deleteEvent = async function(eventId) {
+      if (confirm('Are you sure you want to delete this event?')) {
+        try {
+          await deleteDoc(doc(db, "events", eventId));
+          alert('Event deleted successfully!');
+          loadEventsForDeletion(); // Reload the list
+        } catch (error) {
+          console.error('Error deleting event:', error);
+          alert('Error deleting event. Please try again.');
+        }
+      }
+    }
+
+    // Load events when delete modal opens
+    const deleteEventModal = document.getElementById('deleteEventModal');
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+          if (deleteEventModal.style.display === 'block') {
+            loadEventsForDeletion();
+          }
+        }
+      });
+    });
+    observer.observe(deleteEventModal, { attributes: true });
+  </script>
+</body>
+</html>
