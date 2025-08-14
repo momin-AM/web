@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Independence Day — Special Greetings</title>
+    <style>
+        :root {
+            --bg: #0a0f1e;
+            --card: #121a2e;
+            --acc: #1fa2ff;
+            --text: #e7edf7;
+            --muted: #9bb0c7;
+            --ok: #27c93f;
+            --warn: #ffcc00;
+            --err: #ff4d4d;
+        }
+
+        body {
+            margin: 0px;
+            font-family: system-ui, Segoe UI, Roboto, Arial, sans-serif;
+            background: radial-gradient(1000px 600px at 10% -10%, #183053, transparent 60%),
+                radial-gradient(1000px 600px at 110% 10%, #243a6b, transparent 60%),
+                var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 10px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 44px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(6px);
+            margin-top: 0;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin: 0 0 12px;
+        }
+
+        h1 {
+            font-size: 28px;
+            letter-spacing: 0.5px;
+        }
+
+        h2 {
+            font-size: 22px;
+            color: var(--acc);
+        }
+
+        p {
+            color: var(--muted);
+            margin: 8px 0 16px;
+        }
+
+        .timer {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 16px 0 20px;
+        }
+
+        .timer .box {
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            text-align: center;
+            padding: 12px 8px;
+        }
+
+        .timer .num {
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .timer .lbl {
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text);
+            outline: none;
+            transition: border 0.15s ease;
+        }
+
+        input[type="text"]::placeholder {
+            color: #b7c6da;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--acc);
+        }
+
+        button {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #1fa2ff, #12d8fa, #a6ffcb);
+            color: #0a0a0a;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.04s ease, filter 0.15s ease;
+            white-space: nowrap;
+        }
+
+        button:active {
+            transform: translateY(1px) scale(0.99);
+        }
+
+        .hint {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .status {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .status.ok {
+            color: var(--ok);
+        }
+
+        .status.warn {
+            color: var(--warn);
+        }
+
+        .status.err {
+            color: var(--err);
+        }
+
+        .share {
+            margin-top: 14px;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(31, 162, 255, 0.08);
+            border: 1px dashed rgba(31, 162, 255, 0.35);
+            word-break: break-all;
+            font-size: 14px;
+        }
+
+        .divider {
+            margin: 20px 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.15), transparent);
+            border: none;
+        }
+
+        .flag {
+            display: inline-block;
+            width: 20px;
+            height: 14px;
+            background: linear-gradient(#FF9933 33.33%, #FFFFFF 33.33% 66.66%, #138808 66.66%);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            margin-left: 6px;
+            border-radius: 2px;
+            position: relative;
+            top: 3px;
+        }
+
+        #greetingHeaderContainer h1 {
+            display: inline-block;
+            text-align: center;
+            color: rgb(5, 224, 244) !important;
+            text-shadow: -7px 7px 2px rgba(241, 78, 195, 0.5);
+
+        }
+
+        #greetingHeaderContainer small {
+            display: block;
+            opacity: 0.8;
+            font-size: 0.8em;
+            margin-bottom: 4px;
+        }
+
+        /* Header layout (optional but recommended) */
+        .site-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Reduce vertical padding */
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Pure CSS Indian flag */
+        /* Large Indian flag: 150x100 (3:2 ratio) */
+        .flag-in {
+            position: relative;
+            width: 300px;
+            height: 160px;
+            /* Reduce the gap around the flag: control with margin */
+            margin: 0;
+            /* make this 0 if you want no extra space at all */
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+            background:
+                linear-gradient(to bottom,
+                    #FF9933 0 33.33%,
+                    #FFFFFF 33.33% 66.66%,
+                    #138808 66.66% 100%);
+        }
+
+        /* Ashoka Chakra with 24 spokes using conic-gradient */
+        .flag-in::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* Chakra diameter */
+            width: 28px;
+            height: 28px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            /* Outer ring */
+            box-shadow: 0 0 0 2px #1A5FB4;
+            /* 24 spokes: alternate thin blue slices with transparent slices */
+            background:
+                radial-gradient(circle at center, #1A5FB4 0 2px, transparent 2px 100%),
+                conic-gradient(from 0deg,
+                    #1A5FB4 0deg 7.5deg, transparent 7.5deg 15deg,
+                    #1A5FB4 15deg 22.5deg, transparent 22.5deg 30deg,
+                    #1A5FB4 30deg 37.5deg, transparent 37.5deg 45deg,
+                    #1A5FB4 45deg 52.5deg, transparent 52.5deg 60deg,
+                    #1A5FB4 60deg 67.5deg, transparent 67.5deg 75deg,
+                    #1A5FB4 75deg 82.5deg, transparent 82.5deg 90deg,
+                    #1A5FB4 90deg 97.5deg, transparent 97.5deg 105deg,
+                    #1A5FB4 105deg 112.5deg, transparent 112.5deg 120deg,
+                    #1A5FB4 120deg 127.5deg, transparent 127.5deg 135deg,
+                    #1A5FB4 135deg 142.5deg, transparent 142.5deg 150deg,
+                    #1A5FB4 150deg 157.5deg, transparent 157.5deg 165deg,
+                    #1A5FB4 165deg 172.5deg, transparent 172.5deg 180deg,
+                    #1A5FB4 180deg 187.5deg, transparent 187.5deg 195deg,
+                    #1A5FB4 195deg 202.5deg, transparent 202.5deg 210deg,
+                    #1A5FB4 210deg 217.5deg, transparent 217.5deg 225deg,
+                    #1A5FB4 225deg 232.5deg, transparent 232.5deg 240deg,
+                    #1A5FB4 240deg 247.5deg, transparent 247.5deg 255deg,
+                    #1A5FB4 255deg 262.5deg, transparent 262.5deg 270deg,
+                    #1A5FB4 270deg 277.5deg, transparent 277.5deg 285deg,
+                    #1A5FB4 285deg 292.5deg, transparent 292.5deg 300deg,
+                    #1A5FB4 300deg 307.5deg, transparent 307.5deg 315deg,
+                    #1A5FB4 315deg 322.5deg, transparent 322.5deg 330deg,
+                    #1A5FB4 330deg 337.5deg, transparent 337.5deg 345deg,
+                    #1A5FB4 345deg 352.5deg, transparent 352.5deg 360deg);
+            /* Slight inner soft ring */
+            filter: drop-shadow(0 0 0.5px rgba(26, 95, 180, 0.4));
+        }
+
+        /* Ashoka Chakra (simple circle + ring) */
+        .flag-in::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 26px;
+            /* adjust for look */
+            height: 26px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center,
+                    #1A5FB4 0 2px,
+                    /* center dot */
+                    transparent 2px 100%
+                    /* clear middle */
+                );
+            transform: translate(-50%, -50%);
+            box-shadow:
+                0 0 0 1.6px #1A5FB4,
+                /* outer ring */
+                inset 0 0 0 1px rgba(26, 95, 180, 0.15);
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="flag-in" aria-hidden="true"></div>
+    </header>
+
+
+
+    <main class="container">
+        <!-- Now has id="mainHeader" -->
+        <h1 id="mainHeader">
+            Independence Day<span class="flag"></span>
+        </h1>
+
+        <!-- Greeting will be injected here by JS -->
+        <div id="greetingHeaderContainer"></div>
+
+        <p>Celebrate by creating a personalized greeting link for friends and family!</p>
+
+        <h2>Countdown to Independence Day</h2>
+
+        <!-- Added countdownTarget for the timer -->
+        <div id="countdownTarget" style="margin:8px 0 0 0;"></div>
+
+        <div class="timer" aria-live="polite">
+            <div class="box">
+                <div id="d" class="num">--</div>
+                <div class="lbl">Days</div>
+            </div>
+            <div class="box">
+                <div id="h" class="num">--</div>
+                <div class="lbl">Hours</div>
+            </div>
+            <div class="box">
+                <div id="m" class="num">--</div>
+                <div class="lbl">Minutes</div>
+            </div>
+            <div class="box">
+                <div id="s" class="num">--</div>
+                <div class="lbl">Seconds</div>
+            </div>
+        </div>
+
+
+        <hr class="divider" />
+
+        <h2>Create your greeting link</h2>
+        <p class="hint">Enter your name or group name. We’ll generate a unique ID and link you can share.</p>
+        <div class="row">
+            <input id="nameInput" type="text" placeholder="e.g., Momin " maxlength="80" />
+            <button id="generateBtn">Generate Welcome</button>
+        </div>
+        <div id="status" class="status"></div>
+        <div id="shareBox" class="share" style="display:none;"></div>
+    </main>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        /* ===== Firebase SDK imports ===== */
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import {
+            getFirestore, doc, getDoc, setDoc, serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { firebaseConfig } from "/web_dev/harryteaching/day1/features/firebaseConfig.js"; // relative path to HTML file
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        /* ===== Utilities ===== */
+        function getQueryParam(key) {
+            const url = new URL(window.location.href);
+            return url.searchParams.get(key);
+        }
+
+        function generateId(name) {
+            const base = name.trim().toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .slice(0, 32);
+            const rnd = Math.random().toString(36).slice(2, 8);
+            return base ? `${base}-${rnd}` : rnd;
+        }
+
+        /* ===== Countdown Timer ===== */
+        function nextIndependenceDay() {
+            const now = new Date();
+            const year = (now.getMonth() > 7 || (now.getMonth() === 7 && now.getDate() > 15))
+                ? now.getFullYear() + 1 : now.getFullYear();
+            return new Date(year, 7, 15, 0, 0, 0, 0);
+        }
+
+        const target = nextIndependenceDay();
+
+        function updateTimer() {
+            const now = new Date();
+            let diff = target - now;
+            if (diff < 0) diff = 0;
+
+            const sec = Math.floor(diff / 1000);
+            const d = Math.floor(sec / 86400);
+            const h = Math.floor((sec % 86400) / 3600);
+            const m = Math.floor((sec % 3600) / 60);
+            const s = sec % 60;
+
+            document.getElementById('d').textContent = String(d).padStart(2, '0');
+            document.getElementById('h').textContent = String(h).padStart(2, '0');
+            document.getElementById('m').textContent = String(m).padStart(2, '0');
+            document.getElementById('s').textContent = String(s).padStart(2, '0');
+
+            if (sec === 0) {
+                document.getElementById('countdownTarget').innerHTML = "<h3>Happy Independence Day! 🎉</h3>";
+            } else {
+                const dateStr = target.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+                document.getElementById('countdownTarget').innerHTML = `<h3>Target: ${dateStr}</h3>`;
+            }
+        }
+        updateTimer();
+        setInterval(updateTimer, 1000);
+
+        /* ===== Firestore helpers ===== */
+        const COLLECTION = "greetings";
+
+        async function createGreeting(name) {
+            const id = generateId(name);
+            const ref = doc(db, COLLECTION, id);
+            await setDoc(ref, {
+                name: name.trim(),
+                createdAt: serverTimestamp()
+            });
+            return id;
+        }
+
+        async function fetchGreeting(id) {
+            const ref = doc(db, COLLECTION, id);
+            const snap = await getDoc(ref);
+            return snap.exists() ? snap.data() : null;
+        }
+
+        /* ===== Render greeting in header ===== */
+        function renderGreeting(name) {
+            const header = document.getElementById('mainHeader'); // h1 container in your HTML
+            const escName = String(name).replace(/[&<>"']/g, s =>
+                ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s])
+            );
+            // Clear any previous greeting
+            const old = document.getElementById('greetingHeader');
+            if (old) old.remove();
+
+            // Add small+large combo
+            const wrapper = document.createElement('div');
+            wrapper.id = 'greetingHeaderContainer';
+            wrapper.innerHTML = `<small style="display:block;opacity:0.8;">greetings from : </small>
+                         <h1 style="margin:0;font-size:2em; color:neonviolate;">${escName}</h1>`;
+            header.after(wrapper); // insert right after main title
+        }
+
+        /* ===== Deep link ===== */
+        async function handleDeepLink() {
+            const id = getQueryParam('id');
+            if (!id) return;
+            try {
+                const data = await fetchGreeting(id);
+                if (data && data.name) {
+                    renderGreeting(data.name); // stays visible
+                } else {
+                    document.getElementById('status').className = 'status warn';
+                    document.getElementById('status').textContent = 'Shared link not found. Create a new greeting below.';
+                }
+            } catch (e) {
+                document.getElementById('status').className = 'status err';
+                document.getElementById('status').textContent = 'Failed to load greeting.';
+                console.error(e);
+            }
+        }
+        handleDeepLink();
+
+        /* ===== Generate button handler ===== */
+        document.getElementById('generateBtn').addEventListener('click', async () => {
+            const input = document.getElementById('nameInput');
+            const status = document.getElementById('status');
+            const share = document.getElementById('shareBox');
+
+            const name = input.value.trim();
+            if (!name) {
+                status.className = 'status warn';
+                status.textContent = 'Please enter a name.';
+                return;
+            }
+            if (name.length > 80) {
+                status.className = 'status warn';
+                status.textContent = 'Name is too long.';
+                return;
+            }
+
+            status.className = 'status';
+            status.textContent = 'Generating link...';
+
+            try {
+                const id = await createGreeting(name);
+
+                // Show greeting instantly in header
+                renderGreeting(name);
+
+                const url = new URL(window.location.href);
+                url.searchParams.set('id', id);
+
+                status.className = 'status ok';
+                status.textContent = 'Your greeting link is ready!';
+                share.style.display = 'block';
+                share.textContent = url.toString();
+
+                try {
+                    await navigator.clipboard.writeText(url.toString());
+                    status.textContent = 'Your greeting link is ready! (Copied to clipboard)';
+                } catch { }
+            } catch (e) {
+                console.error(e);
+                status.className = 'status err';
+                status.textContent = 'Could not create greeting.';
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>
