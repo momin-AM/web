@@ -44,6 +44,50 @@
             margin-top: 0;
         }
 
+        /* Back Home Button Styles */
+        .back-home-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .back-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: rgba(31, 162, 255, 0.1);
+            border: 1px solid rgba(31, 162, 255, 0.3);
+            border-radius: 25px;
+            color: var(--acc);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .back-home-btn:hover {
+            background: rgba(31, 162, 255, 0.15);
+            border-color: rgba(31, 162, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(31, 162, 255, 0.2);
+        }
+
+        .back-home-btn:active {
+            transform: translateY(0px);
+        }
+
+        .back-arrow {
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .back-home-btn:hover .back-arrow {
+            transform: translateX(-3px);
+        }
+
         h1, h2, h3 {
             margin: 0 0 12px;
         }
@@ -351,6 +395,14 @@
             .site-header {
                 height: 120px;
             }
+            .back-home-container {
+                top: 15px;
+                left: 15px;
+            }
+            .back-home-btn {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
         }
 
         footer {
@@ -363,6 +415,14 @@
 </head>
 
 <body>
+    <!-- Back Home Button -->
+    <div class="back-home-container">
+        <a href="https://momin-am.github.io/web/" class="back-home-btn">
+            <span class="back-arrow">←</span>
+            <span>Back Home</span>
+        </a>
+    </div>
+
     <header class="site-header">
         <div class="animated-text" aria-hidden="true">
             <div class="particle"></div>
@@ -438,7 +498,6 @@
         
         // You'll need to replace this with your actual Firebase config
         import { firebaseConfig } from './firebaseConfig.js';
-            // Add your Firebase config here
         
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -530,7 +589,7 @@
         function renderGreeting(name) {
             const header = document.getElementById('mainHeader');
             const escName = String(name).replace(/[&<>"']/g, s =>
-               ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[s])
+                ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s])
             );
 
             // Clear any previous greeting
@@ -618,6 +677,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 
