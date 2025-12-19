@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vibe Lyrics Player</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+  /* main lyric glow color */
+  --lyric-glow: 255, 122, 162; /* soft neon pink (R, G, B) */
+}
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(120deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: bgShift 14s ease infinite;
+            color: white;
+            overflow: hidden;
+        }
+
+        @keyframes bgShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .glow {
+            position: absolute;
+            width: 520px;
+            height: 520px;
+            background: radial-gradient(circle, rgba(255, 45, 85, 0.4), transparent 70%);
+            filter: blur(110px);
+             opacity: 0.7;
+  animation: float 10s ease-in-out infinite;
+        }
+        .glow-1 {
+  background: radial-gradient(circle, rgba(255,122,162,0.45), transparent 70%);
+  top: -120px;
+  left: -120px;
+}
+
+.glow-2 {
+  background: radial-gradient(circle, rgba(179,136,255,0.4), transparent 70%);
+  bottom: -140px;
+  right: -120px;
+  animation-delay: 3s;
+}
+
+.glow-3 {
+  background: radial-gradient(circle, rgba(60,242,255,0.35), transparent 70%);
+  top: 40%;
+  left: 60%;
+  animation-delay: 6s;
+}
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-45px);
+            }
+        }
+
+        .player {
+            width: 380px;
+            max-width: 92vw;
+            height: 75vh;
+            max-height: 620px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+              display: flex;
+  flex-direction: column;
+  align-items: center;
+        }
+
+       .play-btn {
+         margin-bottom: 14px;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff2d55, #ff7a18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 22px;
+  transform: translateY(-18px); /* 👈 move up */
+
+  cursor: pointer;
+  box-shadow: 0 12px 36px rgba(255, 45, 85, 0.65);
+  transition: transform 0.2s ease;
+}
+
+
+        .play-btn:hover {
+            transform: scale(1.08);
+        }
+
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-left: 22px solid white;
+            border-top: 14px solid transparent;
+            border-bottom: 14px solid transparent;
+            margin-left: 4px;
+        }
+
+        .lyrics {
+ height: 52vh;               /* 👈 fills available space */
+  width: 100%;
+
+  margin-top: 8px;
+  padding-bottom: 48px;
+
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+
+  opacity: 0;
+  transform: translateY(25px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.lyrics::-webkit-scrollbar {
+  display: none;
+}
+
+
+        .lyrics.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .line {
+  font-size: 24px;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.35); /* fade via color, NOT opacity */
+  transform: translateY(6px);
+  transition: color 0.4s ease, transform 0.4s ease;
+  animation: lineIn 0.6s ease both;
+}
+
+
+@keyframes lineIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: inherit;
+    transform: translateY(0) scale(1);
+  }
+  
+}
+
+        .line.active {
+  color: rgba(255, 255, 255, 1);
+  transform: translateY(0);
+}
+
+
+        .line.past {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+
+        .word {
+            opacity: 1;
+            transition: all 0.25s ease;
+        }
+
+.word.active {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--lyric-glow)),
+    rgba(var(--lyric-glow), 0.65)
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow:
+    0 0 6px rgba(var(--lyric-glow), 0.65),
+    0 0 12px rgba(var(--lyric-glow), 0.35);
+
+  transition:
+    background 0.25s ease,
+    text-shadow 0.25s ease;
+}
+
+
+.song-title {
+     margin-top: 10px; 
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px; /* tighter */
+transform: translateY(-60px); /* 👈 push up */
+  background: linear-gradient(
+    90deg,
+    rgb(var(--lyric-glow)),
+    #ffffff
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow:
+    0 0 10px rgba(var(--lyric-glow), 0.45);
+}
+
+.credit {
+  margin-top: 14px; /* closer to lyrics */
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  opacity: 0.6;
+
+  background: linear-gradient(
+    90deg,
+    rgba(var(--lyric-glow), 0.7),
+    rgba(255,255,255,0.6)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow:
+    0 0 6px rgba(var(--lyric-glow), 0.25);
+}
+
+.center {
+  flex: 1; /* 👈 occupies middle space */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+        
+    </style>
+</head>
+
+<body>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="glow glow-3"></div>
+
+  <div class="player">
+  <div class="song-title">Midnight Roads</div>
+
+  <div class="center">
+    <div class="play-btn" id="playBtn">
+      <div class="play-icon"></div>
+    </div>
+
+    <div class="lyrics" id="lyrics"></div>
+  </div>
+
+  <div class="credit">from momin to you</div>
+</div>
+<audio id="audio" src="MyIshaaV5.mp3"></audio>
+
+
+
+    <script>
+        const audio = document.getElementById("audio");
+const lyricsEl = document.getElementById("lyrics");
+const playBtn = document.getElementById("playBtn");
+
+let raf;
+let playing = false;
+let finished = false;
+
+/* ---------- LYRICS DATA ---------- */
+const lyricsData = [
+  {
+    time: 0.0,
+    words: [
+      { w: "O" ,hold : 0.2},
+      { w: "ishaaaa", hold: 1.7 },
+      { w: "I", hold : 0.2 },
+      { w: "just" ,hold : 0.2},
+      { w: "wannnaaa", hold: 0.6 },
+      { w: "be", hold : 0.2 },
+      { w: "yours", hold: 0.5},
+      { w: "foreeeeeverrrrrr", hold: 4.6 }
+    ]
+  },
+
+  {
+    time: 7.5,
+    words: [
+      { w: "I", hold : 0.1 },
+      { w: "love" ,hold : 0.2},
+      { w: "you" , hold : 0.1},
+      { w: "more" , hold : 0.1},
+      { w: "than" , hold : 0.2},
+      { w: "my" , hold : 0.2},
+      { w: "life", hold: 1 },
+      { w: "for",hold : 0.1},
+      { w: "the" , hold : 0.1},
+      { w: "eternityy", hold: 0.8 }
+    ]
+  },
+
+  {
+    time: 10.5,
+    words: [
+      { w: "I'm" , hold : 0.4 },
+      { w: "yours", hold: 1.3 },
+      { w: "I'm" , hold : 0.4},
+      { w: "yours", hold: 1.3 },
+      { w: "I'm" , jold : 0.3},
+      { w: "yourrrsssss", hold: 3.2 }
+    ]
+  },
+
+  {
+    time: 17.5,
+    words: [
+      { w: "I" , hold : 0.2},
+      { w: "just", hold :  0.2},
+      { w: "crave" , hold : 0.2},
+      { w: "for" , hold : 0.2},
+      { w: "your" , hold : 0.1},
+      { w: "loveeeeeeeeeee", hold: 4.0 }
+    ]
+  },
+
+  {
+    time: 22.6,
+    words: [
+      { w: "My" , hold : 0.2},
+      { w: "ishamoniiii", hold: 1.2 },
+      { w: "I", hold : 0.2 },
+      { w: "loveee", hold: 0.6 },
+      { w: "youhh", hold: 0.6 },
+      { w: "sooooooooooooooooo", hold: 4.2 },
+      { w: "much", hold: 1 },
+      { w: "much", hold: 1.2 },
+      { w: "much", hold: 1.3 }
+    ]
+  },
+
+  {
+    time: 33.2,
+    words: [
+      { w: "I'm", hold : 0.2 },
+      { w: "yours", hold: 1 },
+      { w: "I'm" , hold : 0.4},
+      { w: "yours", hold: 1.3},
+      { w: "I'm" , hold : 0.4},
+      { w: "just" , hold : 0.2},
+      { w: "yourssssssssss", hold: 4.8 }
+    ]
+  }
+];
+
+
+/* ---------- BUILD DOM ---------- */
+lyricsData.forEach((line, i) => {
+  const div = document.createElement("div");
+  div.className = "line";
+
+  const words = line.words;
+  const lineEnd = lyricsData[i + 1]?.time ?? line.time + 4;
+  const totalDuration = lineEnd - line.time;
+
+  // calculate fixed time from manual holds
+  let fixedTime = 0;
+  words.forEach(w => {
+    if (w.hold) fixedTime += w.hold;
+  });
+
+  // auto distribute remaining time
+  const autoWords = words.filter(w => !w.hold);
+  const autoTime = Math.max(totalDuration - fixedTime, 0);
+  const step = autoWords.length ? autoTime / autoWords.length : 0;
+
+  let cursor = line.time;
+
+  words.forEach(wordObj => {
+    const span = document.createElement("span");
+    span.className = "word";
+    span.textContent = wordObj.w + " ";
+
+    span.dataset.time = cursor.toFixed(2);
+    cursor += wordObj.hold ?? step;
+
+    div.appendChild(span);
+  });
+
+  lyricsEl.appendChild(div);
+});
+
+
+const lines = document.querySelectorAll(".line");
+
+/* ---------- SYNC FUNCTION ---------- */
+function syncLyrics() {
+  const t = audio.currentTime;
+
+  lines.forEach((lineEl, i) => {
+    const lineTime = lyricsData[i].time;
+    const nextLineTime = lyricsData[i + 1]?.time ?? Infinity;
+
+    if (t >= lineTime && t < nextLineTime) {
+      lineEl.classList.add("active");
+      lineEl.classList.remove("past");
+    } else if (t >= nextLineTime) {
+      lineEl.classList.add("past");
+      lineEl.classList.remove("active");
+    } else {
+      lineEl.classList.remove("active", "past");
+    }
+
+    const words = lineEl.querySelectorAll(".word");
+    words.forEach((wordEl, wi) => {
+      const wt = parseFloat(wordEl.dataset.time);
+      const nextWt =
+        words[wi + 1]?.dataset.time
+          ? parseFloat(words[wi + 1].dataset.time)
+          : nextLineTime;
+
+      wordEl.classList.toggle("active", t >= wt && t < nextWt);
+    });
+  });
+
+  const activeLine = document.querySelector(".line.active");
+  if (activeLine) {
+    lyricsEl.scrollTo({
+      top: activeLine.offsetTop - lyricsEl.clientHeight * 0.45,
+      behavior: "smooth"
+    });
+  }
+
+  raf = requestAnimationFrame(syncLyrics);
+}
+
+/* ---------- PLAY / PAUSE / RESTART ---------- */
+playBtn.addEventListener("click", () => {
+  // restart if finished
+  if (finished) {
+    audio.currentTime = 0;
+    finished = false;
+  }
+
+  if (!playing) {
+    audio.play();
+    lyricsEl.classList.add("show");
+    raf = requestAnimationFrame(syncLyrics);
+    playing = true;
+  } else {
+    audio.pause();
+    cancelAnimationFrame(raf);
+    playing = false;
+  }
+});
+
+/* ---------- WHEN SONG ENDS ---------- */
+audio.addEventListener("ended", () => {
+  cancelAnimationFrame(raf);
+  playing = false;
+  finished = true;
+});
+
+
+
+    </script>
+</body>
+
+</html>
