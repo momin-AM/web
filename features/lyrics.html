@@ -10,9 +10,10 @@
 
     <style>
         :root {
-  /* main lyric glow color */
-  --lyric-glow: 255, 122, 162; /* soft neon pink (R, G, B) */
-}
+            /* main lyric glow color */
+            --lyric-glow: 255, 122, 162;
+            /* soft neon pink (R, G, B) */
+        }
 
         * {
             box-sizing: border-box;
@@ -52,28 +53,29 @@
             height: 520px;
             background: radial-gradient(circle, rgba(255, 45, 85, 0.4), transparent 70%);
             filter: blur(110px);
-             opacity: 0.7;
-  animation: float 10s ease-in-out infinite;
+            opacity: 0.7;
+            animation: float 10s ease-in-out infinite;
         }
+
         .glow-1 {
-  background: radial-gradient(circle, rgba(255,122,162,0.45), transparent 70%);
-  top: -120px;
-  left: -120px;
-}
+            background: radial-gradient(circle, rgba(255, 122, 162, 0.45), transparent 70%);
+            top: -120px;
+            left: -120px;
+        }
 
-.glow-2 {
-  background: radial-gradient(circle, rgba(179,136,255,0.4), transparent 70%);
-  bottom: -140px;
-  right: -120px;
-  animation-delay: 3s;
-}
+        .glow-2 {
+            background: radial-gradient(circle, rgba(179, 136, 255, 0.4), transparent 70%);
+            bottom: -140px;
+            right: -120px;
+            animation-delay: 3s;
+        }
 
-.glow-3 {
-  background: radial-gradient(circle, rgba(60,242,255,0.35), transparent 70%);
-  top: 40%;
-  left: 60%;
-  animation-delay: 6s;
-}
+        .glow-3 {
+            background: radial-gradient(circle, rgba(60, 242, 255, 0.35), transparent 70%);
+            top: 40%;
+            left: 60%;
+            animation-delay: 6s;
+        }
 
         @keyframes float {
 
@@ -95,28 +97,29 @@
             text-align: center;
             position: relative;
             z-index: 2;
-              display: flex;
-  flex-direction: column;
-  align-items: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-       .play-btn {
-         margin-bottom: 14px;
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #ff2d55, #ff7a18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+        .play-btn {
+            margin-bottom: 14px;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff2d55, #ff7a18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-  margin: 0 auto 22px;
-  transform: translateY(-18px); /* 👈 move up */
+            margin: 0 auto 22px;
+            transform: translateY(-18px);
+            /* 👈 move up */
 
-  cursor: pointer;
-  box-shadow: 0 12px 36px rgba(255, 45, 85, 0.65);
-  transition: transform 0.2s ease;
-}
+            cursor: pointer;
+            box-shadow: 0 12px 36px rgba(255, 45, 85, 0.65);
+            transition: transform 0.2s ease;
+        }
 
 
         .play-btn:hover {
@@ -133,24 +136,25 @@
         }
 
         .lyrics {
- height: 52vh;               /* 👈 fills available space */
-  width: 100%;
+            height: 52vh;
+            /* 👈 fills available space */
+            width: 100%;
 
-  margin-top: 8px;
-  padding-bottom: 48px;
+            margin-top: 8px;
+            padding-bottom: 48px;
 
-  overflow-y: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
 
-  opacity: 0;
-  transform: translateY(25px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
 
-.lyrics::-webkit-scrollbar {
-  display: none;
-}
+        .lyrics::-webkit-scrollbar {
+            display: none;
+        }
 
 
         .lyrics.show {
@@ -159,36 +163,69 @@
         }
 
         .line {
-  font-size: 24px;
-  line-height: 1.9;
-  color: rgba(255, 255, 255, 0.35); /* fade via color, NOT opacity */
-  transform: translateY(6px);
-  transition: color 0.4s ease, transform 0.4s ease;
-  animation: lineIn 0.6s ease both;
+            font-size: 24px;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.35);
+            /* fade via color, NOT opacity */
+            transform: translateY(6px);
+            transition: color 0.4s ease, transform 0.4s ease;
+            animation: lineIn 0.6s ease both;
+        }
+
+
+        @keyframes lineIn {
+            from {
+                opacity: 0;
+                transform: translateY(14px) scale(0.96);
+            }
+
+            to {
+                opacity: inherit;
+                transform: translateY(0) scale(1);
+            }
+
+        }
+.line.active {
+    color: white; /* fallback color */
+    background: linear-gradient(
+        90deg,
+        rgb(var(--lyric-glow)),
+        rgba(var(--lyric-glow), 0.65)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow:
+        0 0 6px rgba(var(--lyric-glow), 0.65),
+        0 0 12px rgba(var(--lyric-glow), 0.35),
+        0 0 18px rgba(var(--lyric-glow), 0.25);
+
+    animation: lineGlowPulse 1.2s ease-in-out infinite alternate;
 }
-
-
-@keyframes lineIn {
-  from {
-    opacity: 0;
-    transform: translateY(14px) scale(0.96);
-  }
-  to {
-    opacity: inherit;
-    transform: translateY(0) scale(1);
-  }
-  
+@keyframes lineGlowPulse {
+    0% {
+        text-shadow:
+            0 0 6px rgba(var(--lyric-glow), 0.65),
+            0 0 12px rgba(var(--lyric-glow), 0.35),
+            0 0 18px rgba(var(--lyric-glow), 0.25);
+    }
+    50% {
+        text-shadow:
+            0 0 12px rgba(var(--lyric-glow), 0.8),
+            0 0 20px rgba(var(--lyric-glow), 0.45),
+            0 0 28px rgba(var(--lyric-glow), 0.35);
+    }
+    100% {
+        text-shadow:
+            0 0 6px rgba(var(--lyric-glow), 0.65),
+            0 0 12px rgba(var(--lyric-glow), 0.35),
+            0 0 18px rgba(var(--lyric-glow), 0.25);
+    }
 }
-
-        .line.active {
-  color: rgba(255, 255, 255, 1);
-  transform: translateY(0);
-}
-
 
         .line.past {
-  color: rgba(255, 255, 255, 0.2);
-}
+            color: rgba(255, 255, 255, 0.2);
+        }
 
 
         .word {
@@ -196,305 +233,245 @@
             transition: all 0.25s ease;
         }
 
-.word.active {
-  background: linear-gradient(
-    90deg,
-    rgb(var(--lyric-glow)),
-    rgba(var(--lyric-glow), 0.65)
-  );
+        .word.active {
+            background: linear-gradient(90deg,
+                    rgb(var(--lyric-glow)),
+                    rgba(var(--lyric-glow), 0.65));
 
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
 
-  text-shadow:
-    0 0 6px rgba(var(--lyric-glow), 0.65),
-    0 0 12px rgba(var(--lyric-glow), 0.35);
+            text-shadow:
+                0 0 6px rgba(var(--lyric-glow), 0.65),
+                0 0 12px rgba(var(--lyric-glow), 0.35);
 
-  transition:
-    background 0.25s ease,
-    text-shadow 0.25s ease;
-}
+            transition:
+                background 0.25s ease,
+                text-shadow 0.25s ease;
+        }
 
 
-.song-title {
-     margin-top: 10px; 
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 10px; /* tighter */
-transform: translateY(-60px); /* 👈 push up */
-  background: linear-gradient(
-    90deg,
-    rgb(var(--lyric-glow)),
-    #ffffff
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+        .song-title {
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            /* tighter */
+            transform: translateY(-60px);
+            /* 👈 push up */
+            background: linear-gradient(90deg,
+                    rgb(var(--lyric-glow)),
+                    #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
 
-  text-shadow:
-    0 0 10px rgba(var(--lyric-glow), 0.45);
-}
+            text-shadow:
+                0 0 10px rgba(var(--lyric-glow), 0.45);
+        }
 
-.credit {
-  margin-top: 14px; /* closer to lyrics */
-  font-size: 14px;
-  letter-spacing: 0.14em;
-  text-transform: lowercase;
-  opacity: 0.6;
+        .credit {
+            margin-top: 14px;
+            /* closer to lyrics */
+            font-size: 14px;
+            letter-spacing: 0.14em;
+            text-transform: lowercase;
+            opacity: 0.6;
 
-  background: linear-gradient(
-    90deg,
-    rgba(var(--lyric-glow), 0.7),
-    rgba(255,255,255,0.6)
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+            background: linear-gradient(90deg,
+                    rgba(var(--lyric-glow), 0.7),
+                    rgba(255, 255, 255, 0.6));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
 
-  text-shadow:
-    0 0 6px rgba(var(--lyric-glow), 0.25);
-}
+            text-shadow:
+                0 0 6px rgba(var(--lyric-glow), 0.25);
+        }
 
-.center {
-  flex: 1; /* 👈 occupies middle space */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+        .center {
+            flex: 1;
+            /* 👈 occupies middle space */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
+        /* ---------- BACK BUTTON ---------- */
+        .back-btn {
+            position: absolute;
+            top: 22px;
+            left: 22px;
+            z-index: 5;
 
-        
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 22px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+
+            color: white;
+
+            box-shadow:
+                0 0 18px rgba(var(--lyric-glow), 0.35);
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease,
+                background 0.25s ease;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.12) translateX(-3px);
+            background: rgba(255, 255, 255, 0.18);
+
+            box-shadow:
+                0 0 28px rgba(var(--lyric-glow), 0.65),
+                0 0 50px rgba(var(--lyric-glow), 0.35);
+        }
+
+        .back-btn:active {
+            transform: scale(0.96);
+        }
     </style>
 </head>
 
 <body>
-  <div class="glow glow-1"></div>
-  <div class="glow glow-2"></div>
-  <div class="glow glow-3"></div>
-
-  <div class="player">
-  <div class="song-title">Ishamoni<3</div>
-
-  <div class="center">
-    <div class="play-btn" id="playBtn">
-      <div class="play-icon"></div>
+    <div class="back-btn" onclick="goBack()">
+        ←
     </div>
 
-    <div class="lyrics" id="lyrics"></div>
-  </div>
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    <div class="glow glow-3"></div>
 
-  <div class="credit">Dedicated to Ishaaamoniii</div>
-</div>
-<audio id="audio" preload="auto">
-  <source src="./MyIshaaV5.mp3" type="audio/mpeg">
-</audio>
+    <div class="player">
+        <div class="song-title">Ishamoni3</div>
 
+                <div class="center">
+                    <div class="play-btn" id="playBtn">
+                        <div class="play-icon"></div>
+                    </div>
 
+                    <div class="lyrics" id="lyrics"></div>
+                </div>
 
-
-    <script>
-        const audio = document.getElementById("audio");
-const lyricsEl = document.getElementById("lyrics");
-const playBtn = document.getElementById("playBtn");
-
-let raf;
-let playing = false;
-let finished = false;
-
-/* ---------- LYRICS DATA ---------- */
-const lyricsData = [
-  {
-    time: 0.0,
-    words: [
-      { w: "O" ,hold : 0.2},
-      { w: "ishaaaa", hold: 1.7 },
-      { w: "I", hold : 0.2 },
-      { w: "just" ,hold : 0.2},
-      { w: "wannnaaa", hold: 0.6 },
-      { w: "be", hold : 0.2 },
-      { w: "yours", hold: 0.5},
-      { w: "foreeeeeverrrrrr", hold: 4.6 }
-    ]
-  },
-
-  {
-    time: 7.5,
-    words: [
-      { w: "I", hold : 0.1 },
-      { w: "love" ,hold : 0.2},
-      { w: "you" , hold : 0.1},
-      { w: "more" , hold : 0.1},
-      { w: "than" , hold : 0.2},
-      { w: "my" , hold : 0.2},
-      { w: "life", hold: 1 },
-      { w: "for",hold : 0.1},
-      { w: "the" , hold : 0.1},
-      { w: "eternityy", hold: 0.8 }
-    ]
-  },
-
-  {
-    time: 10.5,
-    words: [
-      { w: "I'm" , hold : 0.4 },
-      { w: "yours", hold: 1.3 },
-      { w: "I'm" , hold : 0.4},
-      { w: "yours", hold: 1.3 },
-      { w: "I'm" , jold : 0.3},
-      { w: "yourrrsssss", hold: 3.2 }
-    ]
-  },
-
-  {
-    time: 17.5,
-    words: [
-      { w: "I" , hold : 0.2},
-      { w: "just", hold :  0.2},
-      { w: "crave" , hold : 0.2},
-      { w: "for" , hold : 0.2},
-      { w: "your" , hold : 0.1},
-      { w: "loveeeeeeeeeee", hold: 4.0 }
-    ]
-  },
-
-  {
-    time: 22.6,
-    words: [
-      { w: "My" , hold : 0.2},
-      { w: "ishamoniiii", hold: 1.2 },
-      { w: "I", hold : 0.2 },
-      { w: "loveee", hold: 0.6 },
-      { w: "youhh", hold: 0.6 },
-      { w: "sooooooooooooooooo", hold: 4.2 },
-      { w: "much", hold: 1 },
-      { w: "much", hold: 1.2 },
-      { w: "much", hold: 1.3 }
-    ]
-  },
-
-  {
-    time: 33.2,
-    words: [
-      { w: "I'm", hold : 0.2 },
-      { w: "yours", hold: 1 },
-      { w: "I'm" , hold : 0.4},
-      { w: "yours", hold: 1.3},
-      { w: "I'm" , hold : 0.4},
-      { w: "just" , hold : 0.2},
-      { w: "yourssssssssss", hold: 4.8 }
-    ]
-  }
-];
+                <div class="credit">Dedicated to Ishaaamoniii</div>
+        </div>
+        <audio id="audio" preload="auto">
+            <source src="songs/MyIshaaV5.mp3" type="audio/mpeg">
+        </audio>
 
 
-/* ---------- BUILD DOM ---------- */
-lyricsData.forEach((line, i) => {
-  const div = document.createElement("div");
-  div.className = "line";
-
-  const words = line.words;
-  const lineEnd = lyricsData[i + 1]?.time ?? line.time + 4;
-  const totalDuration = lineEnd - line.time;
-
-  // calculate fixed time from manual holds
-  let fixedTime = 0;
-  words.forEach(w => {
-    if (w.hold) fixedTime += w.hold;
-  });
-
-  // auto distribute remaining time
-  const autoWords = words.filter(w => !w.hold);
-  const autoTime = Math.max(totalDuration - fixedTime, 0);
-  const step = autoWords.length ? autoTime / autoWords.length : 0;
-
-  let cursor = line.time;
-
-  words.forEach(wordObj => {
-    const span = document.createElement("span");
-    span.className = "word";
-    span.textContent = wordObj.w + " ";
-
-    span.dataset.time = cursor.toFixed(2);
-    cursor += wordObj.hold ?? step;
-
-    div.appendChild(span);
-  });
-
-  lyricsEl.appendChild(div);
-});
+        <script src="songs.js"></script>
 
 
-const lines = document.querySelectorAll(".line");
+        <script>
+            function goBack() {
+                window.location.href = "index.html";
+            }
 
-/* ---------- SYNC FUNCTION ---------- */
-function syncLyrics() {
-  const t = audio.currentTime;
+            const audio = document.getElementById("audio");
+            const lyricsEl = document.getElementById("lyrics");
+            const playBtn = document.getElementById("playBtn");
 
-  lines.forEach((lineEl, i) => {
-    const lineTime = lyricsData[i].time;
-    const nextLineTime = lyricsData[i + 1]?.time ?? Infinity;
+            let raf;
+            let playing = false;
+            let finished = false;
 
-    if (t >= lineTime && t < nextLineTime) {
-      lineEl.classList.add("active");
-      lineEl.classList.remove("past");
-    } else if (t >= nextLineTime) {
-      lineEl.classList.add("past");
-      lineEl.classList.remove("active");
-    } else {
-      lineEl.classList.remove("active", "past");
-    }
+            const songId = localStorage.getItem("selectedSong");
+            const song = SONGS[songId];
 
-    const words = lineEl.querySelectorAll(".word");
-    words.forEach((wordEl, wi) => {
-      const wt = parseFloat(wordEl.dataset.time);
-      const nextWt =
-        words[wi + 1]?.dataset.time
-          ? parseFloat(words[wi + 1].dataset.time)
-          : nextLineTime;
+            if (!song) {
+                alert("No song selected");
+                location.href = "index.html";
+            }
 
-      wordEl.classList.toggle("active", t >= wt && t < nextWt);
-    });
-  });
+            audio.src = song.audio;
+            document.title = song.title;
 
-  const activeLine = document.querySelector(".line.active");
-  if (activeLine) {
-    lyricsEl.scrollTo({
-      top: activeLine.offsetTop - lyricsEl.clientHeight * 0.45,
-      behavior: "smooth"
-    });
-  }
+            const lyricsData = song.lyricsData;
 
-  raf = requestAnimationFrame(syncLyrics);
-}
+            /* ---------- BUILD DOM ---------- */
+            // Create line elements for each lyric line
+            lyricsData.forEach((line) => {
+                const div = document.createElement("div");
+                div.className = "line";
+                div.textContent = line.text;
+                lyricsEl.appendChild(div);
+            });
 
-/* ---------- PLAY / PAUSE / RESTART ---------- */
-playBtn.addEventListener("click", () => {
-  // restart if finished
-  if (finished) {
-    audio.currentTime = 0;
-    finished = false;
-  }
+            const lines = document.querySelectorAll(".line");
 
-  if (!playing) {
-    audio.play();
-    lyricsEl.classList.add("show");
-    raf = requestAnimationFrame(syncLyrics);
-    playing = true;
-  } else {
-    audio.pause();
-    cancelAnimationFrame(raf);
-    playing = false;
-  }
-});
+            /* ---------- SYNC FUNCTION ---------- */
+            function syncLyrics() {
+                const t = audio.currentTime;
 
-/* ---------- WHEN SONG ENDS ---------- */
-audio.addEventListener("ended", () => {
-  cancelAnimationFrame(raf);
-  playing = false;
-  finished = true;
-});
+                lines.forEach((lineEl, i) => {
+                    const lineTime = lyricsData[i].time;
+                    const nextLineTime = lyricsData[i + 1]?.time ?? Infinity;
 
+                    // Highlight only the current line
+                    if (t >= lineTime && t < nextLineTime) {
+                        lineEl.classList.add("active");
+                        lineEl.classList.remove("past");
+                    } else if (t >= nextLineTime) {
+                        lineEl.classList.add("past");
+                        lineEl.classList.remove("active");
+                    } else {
+                        lineEl.classList.remove("active", "past");
+                    }
+                });
 
+                // Scroll active line into view
+                const activeLine = document.querySelector(".line.active");
+                if (activeLine) {
+                    lyricsEl.scrollTo({
+                        top: activeLine.offsetTop - lyricsEl.clientHeight * 0.45,
+                        behavior: "smooth"
+                    });
+                }
 
-    </script>
+                raf = requestAnimationFrame(syncLyrics);
+            }
+
+            /* ---------- PLAY / PAUSE / RESTART ---------- */
+            playBtn.addEventListener("click", () => {
+                // restart if finished
+                if (finished) {
+                    audio.currentTime = 0;
+                    finished = false;
+                }
+
+                if (!playing) {
+                    audio.play();
+                    lyricsEl.classList.add("show");
+                    raf = requestAnimationFrame(syncLyrics);
+                    playing = true;
+                } else {
+                    audio.pause();
+                    cancelAnimationFrame(raf);
+                    playing = false;
+                }
+            });
+
+            /* ---------- WHEN SONG ENDS ---------- */
+            audio.addEventListener("ended", () => {
+                cancelAnimationFrame(raf);
+                playing = false;
+                finished = true;
+            });
+        </script>
+
 </body>
 
 </html>
