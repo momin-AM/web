@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Song Library</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+  --bg1: #0f0c29;
+  --bg2: #302b63;
+  --bg3: #24243e;
+  --glass: rgba(255,255,255,0.12);
+  --border: rgba(255,255,255,0.25);
+  --text: #ffffff;
+  --accent: #ff79c6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  background: linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* ---------- CONTAINER ---------- */
+.app {
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+  animation: fadeIn 1s ease forwards;
+}
+
+/* ---------- HEADER ---------- */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.back {
+  cursor: pointer;
+  font-size: 20px;
+  opacity: 0.8;
+  transition: transform 0.3s, opacity 0.3s;
+}
+.back:hover {
+  transform: translateX(-4px);
+  opacity: 1;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* ---------- SONG LIST ---------- */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---------- SONG CARD ---------- */
+.song {
+  position: relative;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--glass), rgba(255,255,255,0.05));
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  overflow: hidden;
+  transform: translateY(20px);
+  opacity: 0;
+  animation: slideUp 0.7s ease forwards;
+}
+
+.song:nth-child(1) { animation-delay: 0.1s; }
+.song:nth-child(2) { animation-delay: 0.2s; }
+.song:nth-child(3) { animation-delay: 0.3s; }
+
+.song::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--x,50%) var(--y,50%), 
+              rgba(255,255,255,0.25), transparent 40%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.song:hover::after {
+  opacity: 1;
+}
+
+.song:hover {
+  transform: scale(1.03);
+  border-color: var(--accent);
+}
+
+/* ---------- SONG CONTENT ---------- */
+.song-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.song-sub {
+  font-size: 13px;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+/* ---------- ANIMATIONS ---------- */
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+
+@keyframes slideUp {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ---------- MOBILE ---------- */
+@media (max-width: 480px) {
+  .title { font-size: 22px }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+  <div class="header">
+    <div class="back" onclick="goBack()">←</div>
+    <div class="title">🎵 Song Library of Isha</div>
+  </div>
+<div class="list" id="library"></div>
+
+</div>
+
+<script src="songs.js"></script>
+<script>
+function openSong(id) {
+  localStorage.setItem("selectedSong", id);
+  window.location.href = "lyrics.html";
+}
+
+function goBack() {
+  window.location.href = ".web/index.html";
+}
+
+/* Ripple hover tracking */
+document.querySelectorAll(".song").forEach(card => {
+  card.addEventListener("mousemove", e => {
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty("--x", `${e.clientX - rect.left}px`);
+    card.style.setProperty("--y", `${e.clientY - rect.top}px`);
+  });
+});
+const libraryEl = document.getElementById("library");
+
+// Generate song cards dynamically from SONGS
+Object.keys(SONGS).forEach((id, index) => {
+    const song = SONGS[id];
+
+    const div = document.createElement("div");
+    div.className = "song";
+    div.style.animationDelay = `${0.1 * (index + 1)}s`; // same as before
+
+    div.onclick = () => {
+        localStorage.setItem("selectedSong", id);
+        window.location.href = "lyrics.html";
+    };
+
+    div.innerHTML = `
+        <div class="song-title">${song.title}</div>
+        <div class="song-sub">Dynamic • Auto • Lyrics</div>
+    `;
+
+    libraryEl.appendChild(div);
+
+    // Ripple hover tracking
+    div.addEventListener("mousemove", e => {
+        const rect = div.getBoundingClientRect();
+        div.style.setProperty("--x", `${e.clientX - rect.left}px`);
+        div.style.setProperty("--y", `${e.clientY - rect.top}px`);
+    });
+});
+
+</script>
+
+</body>
+</html>
